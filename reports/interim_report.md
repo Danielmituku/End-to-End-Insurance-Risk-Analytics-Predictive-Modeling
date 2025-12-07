@@ -292,17 +292,22 @@ All visualizations are saved in `reports/figures/` directory.
 
 **Data Files Tracked:**
 - `data/raw/MachineLearningRating_v3.txt` - Main insurance dataset (1,000,098 rows, 52 columns)
+- **File Size**: 529,363,713 bytes (~505 MB)
+- **Hash**: md5 (f6b7009b68ae21372b7deca9307fbb23)
 - File tracked using DVC for version control
-- `.dvc` files committed to Git repository
+- `.dvc` file: `data/raw/MachineLearningRating_v3.txt.dvc` committed to Git repository
 
 **Version Control:**
 - ✅ Data files tracked with DVC
 - ✅ `.dvc` files committed to Git
 - ✅ Data pushed to local remote storage
+- ✅ DVC autostage enabled for easier workflow
 
 **Data Versions:**
-- **Version 1**: [Description of initial data]
-- [Additional versions if created]
+- **Version 1**: Initial dataset (MachineLearningRating_v3.txt)
+  - Date: December 7, 2025
+  - Status: Tracked and pushed to local remote storage
+  - Location: `data/dvc_storage/files/`
 
 ### 2.3 Reproducibility
 
@@ -314,12 +319,30 @@ All visualizations are saved in `reports/figures/` directory.
 
 **DVC Commands Used:**
 ```bash
+# Initialize DVC (already initialized from previous setup)
 dvc init
+
+# Configure local remote storage
 dvc remote add -d localstorage ./data/dvc_storage
+
+# Add data file to DVC tracking
 dvc add data/raw/MachineLearningRating_v3.txt
-git add data/raw/MachineLearningRating_v3.txt.dvc
+
+# Commit DVC files to Git
+git add data/raw/MachineLearningRating_v3.txt.dvc .dvc/config .dvc/.gitignore
+
+# Push data to local remote storage
 dvc push
+
+# Enable autostage for easier workflow
+dvc config core.autostage true
 ```
+
+**Verification:**
+- ✅ DVC version: 3.64.2
+- ✅ Remote storage: `localstorage` (default) at `./data/dvc_storage`
+- ✅ Data status: "Data and pipelines are up to date"
+- ✅ All `.dvc` files committed to Git
 
 ---
 
