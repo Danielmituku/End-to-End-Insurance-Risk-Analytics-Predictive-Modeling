@@ -86,15 +86,17 @@ This interim report summarizes the progress made on the first two tasks of the i
 ##### Overall Portfolio Metrics
 
 **Loss Ratio Analysis:**
-- **Overall Loss Ratio**: Calculated as TotalClaims / TotalPremium
-- **Note**: Loss ratio calculation shows some infinite values due to zero premiums. Analysis should focus on policies with positive premiums.
-- **Interpretation**: The portfolio shows significant variability in loss ratios, indicating opportunities for risk-based pricing segmentation.
+- **Overall Loss Ratio**: 1.0477 (104.77%) - TotalClaims / TotalPremium
+- **Note**: Loss ratio > 1.0 indicates the portfolio is unprofitable overall, with claims exceeding premiums
+- **Valid Records**: 618,176 out of 1,000,098 records have valid loss ratios (policies with positive premiums)
+- **Interpretation**: The portfolio shows significant variability in loss ratios across provinces, vehicle types, and demographics, indicating critical opportunities for risk-based pricing segmentation and premium adjustments.
 
 **Key Financial Metrics:**
-- **Total Premium**: Mean = 61.91 ZAR, Median = 2.18 ZAR (highly skewed)
-- **Total Claims**: Mean = 64.86 ZAR, Median = 0 ZAR (most policies have no claims)
-- **Average Premium per Policy**: 61.91 ZAR (mean)
-- **Average Claim Amount**: 64.86 ZAR (mean) when claims occur
+- **Total Premium**: 61,911,562.70 ZAR (sum across all policies)
+- **Total Claims**: 64,867,546.17 ZAR (sum across all policies)
+- **Total Policies**: 7,000 unique policies
+- **Average Premium per Policy**: 61.91 ZAR (mean), 2.18 ZAR (median) - highly skewed
+- **Average Claim Amount**: 23,273.39 ZAR (mean when claims occur), 0 ZAR (median - most policies have no claims)
 - **Sum Insured**: Mean = 604,172.70 ZAR, Median = 7,500 ZAR
 - **Custom Value Estimate**: Mean = 225,531.10 ZAR (available for 22% of policies)
 
@@ -102,43 +104,72 @@ This interim report summarizes the progress made on the first two tasks of the i
 
 **Visualization**: See `07_creative_1_loss_ratio_heatmap.png` for detailed heatmap
 
-| Province | Loss Ratio | Total Premium | Total Claims | Number of Policies |
-|----------|------------|---------------|--------------|-------------------|
-| *[To be filled after running analysis - see notebook cell outputs]* | | | | |
+| Province | Loss Ratio | Total Premium (ZAR) | Total Claims (ZAR) | Number of Policies |
+|----------|------------|---------------------|-------------------|-------------------|
+| Gauteng | 1.163 | 24,054,870 | 27,981,270 | 1,978 |
+| Western Cape | 1.044 | 9,810,107 | 10,242,260 | 734 |
+| KwaZulu-Natal | 1.022 | 13,235,780 | 13,526,350 | 1,155 |
+| North West | 0.747 | 7,490,508 | 5,593,723 | 904 |
+| Mpumalanga | 0.718 | 2,836,292 | 2,035,792 | 294 |
+| Limpopo | 0.645 | 1,537,324 | 991,893 | 149 |
+| Eastern Cape | 0.629 | 2,140,303 | 1,346,308 | 262 |
+| Free State | 0.510 | 521,363 | 265,975 | 44 |
+| Northern Cape | 0.283 | 316,558 | 89,491 | 44 |
 
 **Key Insights:**
-- Geographic risk patterns are clearly visible in the loss ratio heatmap
-- Some provinces show consistently higher loss ratios across vehicle types
-- Regional risk segmentation opportunities identified
-- **Recommendation**: Implement province-based premium adjustments for high-risk regions
+- **Highest Risk Provinces**: Gauteng (116.3%), Western Cape (104.4%), and KwaZulu-Natal (102.2%) all have loss ratios > 1.0, indicating unprofitable portfolios
+- **Lowest Risk Provinces**: Northern Cape (28.3%), Free State (51.0%), and Eastern Cape (62.9%) show significantly lower risk
+- **Geographic Risk Pattern**: Major urban provinces (Gauteng, Western Cape) show highest risk, while smaller provinces show lower risk
+- **Regional Risk Segmentation**: Clear opportunity for province-based premium adjustments
+- **Recommendation**: 
+  - **Immediate Action**: Increase premiums by 15-20% for Gauteng, Western Cape, and KwaZulu-Natal
+  - **Moderate Adjustment**: Review pricing for North West, Mpumalanga, and Limpopo
+  - **Maintain Competitive**: Northern Cape, Free State, and Eastern Cape can maintain or slightly reduce premiums
 
 ##### Loss Ratio by Vehicle Type
 
 **Visualization**: See `07_creative_1_loss_ratio_heatmap.png` for Province-Vehicle Type combinations
 
-| Vehicle Type | Loss Ratio | Total Premium | Total Claims | Number of Policies |
-|--------------|------------|---------------|--------------|-------------------|
-| *[To be filled after running analysis - see notebook cell outputs]* | | | | |
+| Vehicle Type | Loss Ratio | Total Premium (ZAR) | Total Claims (ZAR) | Number of Policies |
+|--------------|------------|---------------------|-------------------|-------------------|
+| Heavy Commercial | 1.612 | 460,948 | 743,243 | 59 |
+| Medium Commercial | 1.028 | 3,922,840 | 4,032,212 | 372 |
+| Passenger Vehicle | 1.000 | 56,673,410 | 56,680,480 | 5,318 |
+| Light Commercial | 0.232 | 260,498 | 60,453 | 35 |
+| Bus | 0.000 | 58,245 | 0 | 5 |
 
 **Key Insights:**
-- Vehicle type is a significant risk factor, as shown in the heatmap visualization
-- Certain vehicle types show consistently higher loss ratios across provinces
-- Risk-based pricing by vehicle type is recommended
-- **Recommendation**: Adjust premiums based on vehicle type risk profiles
+- **Highest Risk**: Heavy Commercial vehicles (161.2% loss ratio) and Medium Commercial (102.8%) are unprofitable
+- **Moderate Risk**: Passenger Vehicles (100.0%) are at break-even, representing the largest segment (5,318 policies)
+- **Lowest Risk**: Light Commercial (23.2%) and Bus (0.0%) show very low risk
+- **Volume vs Risk**: Passenger vehicles dominate by volume but are at break-even, while commercial vehicles are high-risk
+- **Recommendation**: 
+  - **Critical**: Increase Heavy Commercial premiums by 60-70% to achieve profitability
+  - **High Priority**: Increase Medium Commercial premiums by 20-30%
+  - **Review**: Passenger Vehicle pricing strategy needs review to improve margins
+  - **Opportunity**: Light Commercial and Bus segments can be marketed as low-risk options
 
 ##### Loss Ratio by Gender
 
 **Visualization**: See `02_bar_charts_categorical_variables.png` for gender distribution
 
-| Gender | Loss Ratio | Total Premium | Total Claims | Number of Policies |
-|--------|------------|---------------|--------------|-------------------|
-| Male | *[To be calculated]* | *[To be calculated]* | *[To be calculated]* | *[To be calculated]* |
-| Female | *[To be calculated]* | *[To be calculated]* | *[To be calculated]* | *[To be calculated]* |
+| Gender | Loss Ratio | Total Premium (ZAR) | Total Claims (ZAR) | Number of Policies |
+|--------|------------|---------------------|-------------------|-------------------|
+| Not specified | 1.015 | 59,207,820 | 60,076,380 | 5,264 |
+| Female | 0.812 | 304,481 | 247,277 | 23 |
+| Male | 0.774 | 1,606,618 | 1,242,916 | 149 |
 
 **Key Insights:**
-- Gender distribution shows [to be filled after analysis]
-- Statistical testing will be performed in Task 3 (A/B Hypothesis Testing)
-- **Note**: Gender-based pricing may have regulatory considerations
+- **Data Quality Issue**: 5,264 policies (75.2%) have "Not specified" gender, limiting gender-based analysis
+- **Specified Gender Analysis**: 
+  - Female policies show 81.2% loss ratio (lower risk than overall)
+  - Male policies show 77.4% loss ratio (lowest risk among specified genders)
+  - Both specified genders show better performance than the overall portfolio
+- **Sample Size**: Only 172 policies (2.5%) have specified gender, making statistical conclusions limited
+- **Recommendation**: 
+  - Improve data collection to capture gender information for better segmentation
+  - Statistical testing will be performed in Task 3 (A/B Hypothesis Testing) with appropriate sample size considerations
+  - **Note**: Gender-based pricing may have regulatory and ethical considerations
 
 ##### Distribution Analysis
 
@@ -299,22 +330,50 @@ dvc push
 Based on the EDA findings:
 
 1. **Province-Level Segmentation:**
-   - [Recommendation based on province analysis]
-   - [Potential premium adjustments]
+   - **High-Risk Provinces** (Loss Ratio > 1.0): Gauteng (116.3%), Western Cape (104.4%), KwaZulu-Natal (102.2%)
+     - **Action**: Immediate premium increases of 15-20% required
+     - **Impact**: These three provinces represent 3,867 policies (55.2% of portfolio)
+   - **Low-Risk Provinces** (Loss Ratio < 0.7): Northern Cape (28.3%), Free State (51.0%), Eastern Cape (62.9%)
+     - **Action**: Maintain competitive pricing, potential for premium reduction to attract new customers
+     - **Impact**: Opportunity to expand market share in these regions
 
 2. **Vehicle Type Segmentation:**
-   - [Recommendation based on vehicle type analysis]
-   - [Risk-based pricing opportunities]
+   - **Critical Risk**: Heavy Commercial (161.2% loss ratio) - requires 60-70% premium increase
+   - **High Risk**: Medium Commercial (102.8% loss ratio) - requires 20-30% premium increase
+   - **Break-Even**: Passenger Vehicles (100.0% loss ratio) - pricing review needed
+   - **Low Risk**: Light Commercial (23.2%) and Bus (0.0%) - marketing opportunities for low-risk segments
 
 3. **Demographic Segmentation:**
-   - [Recommendation based on gender/demographic analysis]
-   - [Targeting opportunities]
+   - **Data Limitation**: 75.2% of policies have unspecified gender, limiting demographic analysis
+   - **Available Data**: Specified gender policies (Male: 77.4%, Female: 81.2%) show lower risk than overall portfolio
+   - **Action**: Improve data collection for better demographic segmentation
+   - **Targeting**: Focus on low-risk demographic segments once data quality improves
 
 ### 3.2 Data Quality Recommendations
 
-- [Recommendations for handling missing data]
-- [Recommendations for data cleaning]
-- [Recommendations for data collection improvements]
+**Missing Data Handling:**
+- **High Missing Values (>50%)**: 
+  - NumberOfVehiclesInFleet (100% missing) - Consider removing or collecting this data
+  - CrossBorder (99.9% missing) - Low priority, but useful for cross-border risk analysis
+  - CustomValueEstimate (78% missing) - Important for vehicle valuation, consider imputation or collection
+- **Moderate Missing Values (10-50%)**:
+  - NewVehicle (15.3%) - Important for risk assessment, consider imputation
+  - Bank (14.6%) - May be useful for payment risk analysis
+- **Low Missing Values (<5%)**:
+  - Gender (0.95%) - Critical for demographic analysis, improve data collection
+  - Vehicle-related fields (0.06%) - Excellent data quality, maintain standards
+
+**Data Cleaning Recommendations:**
+- Handle zero and negative premium values (currently causing infinite loss ratios)
+- Remove or flag records with invalid loss ratios (inf, -inf, NaN)
+- Standardize categorical variables (e.g., gender values)
+- Validate date formats and ranges
+
+**Data Collection Improvements:**
+- **Priority 1**: Improve gender data collection (currently 75.2% unspecified)
+- **Priority 2**: Collect CustomValueEstimate for more policies (currently 22% coverage)
+- **Priority 3**: Implement validation rules to prevent missing critical fields
+- **Priority 4**: Collect NumberOfVehiclesInFleet if relevant for fleet pricing
 
 ### 3.3 Next Steps (Tasks 3 & 4)
 
@@ -334,19 +393,41 @@ Based on the EDA findings:
 
 ### 4.1 Challenges Encountered
 
-1. [Challenge 1 and how it was addressed]
-2. [Challenge 2 and how it was addressed]
+1. **Zero and Negative Premium Values**: 
+   - **Challenge**: Some policies have zero or negative premiums, causing infinite loss ratios
+   - **Solution**: Filtered to valid records (618,176 out of 1,000,098) with positive premiums for loss ratio analysis
+   - **Impact**: Analysis focuses on policies with valid financial data
+
+2. **High Missing Values in Key Fields**:
+   - **Challenge**: Gender data missing for 75.2% of policies, limiting demographic analysis
+   - **Solution**: Analyzed available data with appropriate sample size considerations
+   - **Impact**: Gender-based insights are limited but still valuable for the available subset
+
+3. **Data Format Issues**:
+   - **Challenge**: TransactionMonth was in object format, needed conversion to datetime
+   - **Solution**: Implemented automatic datetime conversion in data loading pipeline
+   - **Impact**: Enabled proper temporal analysis
 
 ### 4.2 Data Limitations
 
-- [Limitation 1]
-- [Limitation 2]
-- [Impact on analysis]
+- **Portfolio Profitability**: Overall loss ratio of 1.0477 indicates the portfolio is currently unprofitable, requiring immediate pricing adjustments
+- **Geographic Concentration**: Three provinces (Gauteng, Western Cape, KwaZulu-Natal) represent 55.2% of policies but all show loss ratios > 1.0
+- **Vehicle Type Risk**: Heavy Commercial vehicles show extremely high risk (161.2% loss ratio) with only 59 policies, making it a small but critical segment
+- **Demographic Data Quality**: Limited gender data (only 2.5% specified) restricts demographic segmentation opportunities
+- **Temporal Scope**: Data covers only 18 months (Feb 2014 - Aug 2015), limiting long-term trend analysis
+
+**Impact on Analysis:**
+- Some segments have small sample sizes, requiring careful statistical interpretation
+- Missing data reduces the scope of certain analyses but doesn't invalidate findings
+- Overall portfolio unprofitability requires immediate business action
 
 ### 4.3 Future Improvements
 
-- [Improvement 1]
-- [Improvement 2]
+- **Data Collection**: Implement mandatory fields for gender, improve CustomValueEstimate collection
+- **Data Validation**: Add validation rules to prevent zero/negative premiums and ensure data quality
+- **Extended Time Period**: Collect data over longer periods for better trend analysis
+- **Feature Engineering**: Create additional risk indicators from existing data
+- **Real-time Monitoring**: Implement dashboards to monitor loss ratios by segment in real-time
 
 ---
 
@@ -374,8 +455,28 @@ The project is well-positioned to proceed with A/B hypothesis testing (Task 3) a
 - **Task-2 Branch**: [To be created]
 
 ### Appendix B: Code Structure
+
 ```
-[Project structure diagram or description]
+End-to-End-Insurance-Risk-Analytics-Predictive-Modeling/
+├── src/                    # Source code
+│   ├── data/              # Data loading and preprocessing
+│   ├── eda/               # Exploratory Data Analysis
+│   ├── ab_testing/        # A/B Hypothesis Testing
+│   ├── modeling/          # Statistical and ML models
+│   └── utils/             # Utility functions
+├── tests/                 # Unit tests
+├── data/                  # Data files (tracked by DVC)
+│   ├── raw/              # Raw data files
+│   └── processed/        # Processed data files
+├── notebooks/             # Jupyter notebooks for analysis
+│   └── 01_eda_analysis.ipynb
+├── reports/               # Generated reports and visualizations
+│   ├── figures/          # All EDA visualizations (9 figures)
+│   ├── interim_report.md # This report
+│   └── *.csv            # Statistical summaries
+├── models/                # Trained model artifacts
+├── scripts/               # Utility scripts
+└── .github/               # GitHub Actions workflows
 ```
 
 ### Appendix C: Data Dictionary
