@@ -46,8 +46,9 @@ This interim report summarizes the progress made on the first two tasks of the i
 
 **Dataset Overview:**
 - **Time Period**: February 2014 to August 2015 (18 months)
-- **Total Records**: [To be filled after data loading]
-- **Total Features**: [To be filled after data loading]
+- **Total Records**: 1,000,098 policies
+- **Total Features**: 52 columns
+- **Data File**: `MachineLearningRating_v3.txt` (pipe-delimited)
 
 **Data Categories:**
 1. **Policy Information**: UnderwrittenCoverID, PolicyID, TransactionMonth
@@ -60,13 +61,25 @@ This interim report summarizes the progress made on the first two tasks of the i
 #### Data Quality Assessment
 
 **Missing Values Analysis:**
-- [Summary of missing values by column]
-- [Percentage of missing data]
-- [Strategy for handling missing values]
+- **High Missing Values (>50%)**:
+  - NumberOfVehiclesInFleet: 100% (entire column missing)
+  - CrossBorder: 99.93%
+  - CustomValueEstimate: 77.96%
+  - Converted, Rebuilt, WrittenOff: 64.18% each
+- **Moderate Missing Values (10-50%)**:
+  - NewVehicle: 15.33%
+  - Bank: 14.59%
+- **Low Missing Values (<5%)**:
+  - AccountType: 4.02%
+  - Gender: 0.95%
+  - MaritalStatus: 0.83%
+  - Vehicle-related fields: 0.06% (552 records)
 
 **Data Types:**
-- [Summary of data types]
-- [Any type conversion needed]
+- **Numerical**: TotalPremium, TotalClaims, SumInsured, RegistrationYear, etc.
+- **Categorical**: Province, Gender, VehicleType, CoverType, Make, etc.
+- **Boolean**: IsVATRegistered, NewVehicle, WrittenOff, etc.
+- **Date**: TransactionMonth (converted from object to datetime)
 
 #### Exploratory Data Analysis Findings
 
@@ -121,36 +134,41 @@ This interim report summarizes the progress made on the first two tasks of the i
 
 ##### Distribution Analysis
 
+**Visualizations**: See `01_histograms_numerical_variables.png` and `06_box_plots_outlier_detection.png`
+
 **TotalPremium Distribution:**
-- Mean: [Value]
-- Median: [Value]
-- Standard Deviation: [Value]
-- Skewness: [Value]
-- [Visualization description]
+- Mean: 61.91 ZAR
+- Median: 2.18 ZAR
+- Standard Deviation: 230.28 ZAR
+- Highly right-skewed distribution (median << mean)
+- Many zero values (25th percentile = 0)
 
 **TotalClaims Distribution:**
-- Mean: [Value]
-- Median: [Value]
-- Standard Deviation: [Value]
-- Skewness: [Value]
-- [Visualization description]
+- Mean: 64.86 ZAR
+- Median: 0 ZAR
+- Standard Deviation: 2,384.08 ZAR
+- Extremely right-skewed (most policies have zero claims)
+- High variance indicates significant claim variability
 
 **Outlier Detection:**
-- [Number of outliers in TotalPremium]
-- [Number of outliers in TotalClaims]
-- [Outlier handling strategy]
+- Box plots created for all key numerical variables (see `06_box_plots_outlier_detection.png`)
+- IQR method used: Outliers defined as values outside Q1 - 1.5*IQR to Q3 + 1.5*IQR
+- Outlier counts and percentages calculated for each variable
+- Strategy: Outliers removed for visualization purposes (99th percentile), but full analysis includes all data
 
 ##### Temporal Trends
 
+**Visualization**: See `08_creative_2_temporal_risk_trend.png`
+
 **Monthly Trends:**
-- [Claim frequency trends over time]
-- [Claim severity trends over time]
-- [Premium trends over time]
-- [Seasonal patterns if any]
+- Premium and claims tracked monthly from February 2014 to August 2015
+- Loss ratio calculated monthly to assess risk trends
+- Month-over-month changes in TotalPremium and TotalClaims analyzed by PostalCode
 
 **Key Observations:**
-- [Trends identified]
-- [Anomalies or patterns]
+- Correlation of 0.18 between monthly premium changes and claims changes suggests moderate relationship
+- Temporal analysis reveals seasonal patterns in risk
+- Geographic analysis by postal code shows varying risk patterns across regions
 
 ##### Vehicle Make/Model Analysis
 
@@ -173,20 +191,28 @@ This interim report summarizes the progress made on the first two tasks of the i
 
 #### Creative Visualizations
 
-**Visualization 1: [Title]**
-- **Type**: [Chart type]
-- **Key Insight**: [What it reveals]
-- **Business Impact**: [How it helps decision-making]
+All visualizations are saved in `reports/figures/` directory.
 
-**Visualization 2: [Title]**
-- **Type**: [Chart type]
-- **Key Insight**: [What it reveals]
-- **Business Impact**: [How it helps decision-making]
+**Visualization 1: Loss Ratio Heatmap - Province vs Vehicle Type**
+- **File**: `07_creative_1_loss_ratio_heatmap.png`
+- **Type**: Heatmap
+- **Key Insight**: Reveals which province-vehicle type combinations have the highest risk (loss ratio). This helps identify geographic and vehicle category risk patterns simultaneously.
+- **Business Impact**: Enables targeted premium adjustments by province and vehicle type, optimizing pricing strategy for high-risk combinations while maintaining competitive rates for low-risk segments.
 
-**Visualization 3: [Title]**
-- **Type**: [Chart type]
-- **Key Insight**: [What it reveals]
-- **Business Impact**: [How it helps decision-making]
+**Visualization 2: Temporal Risk Trend Analysis**
+- **File**: `08_creative_2_temporal_risk_trend.png`
+- **Type**: Dual y-axis line plot
+- **Key Insight**: Shows how premium, claims, and risk (loss ratio) evolved over the 18-month period, revealing seasonal patterns and trends. The correlation between monthly premium changes and claims changes by postal code is 0.18.
+- **Business Impact**: Identifies seasonal risk patterns, enabling proactive premium adjustments and marketing campaigns timed to low-risk periods. Helps understand if premium increases correlate with claim increases.
+
+**Visualization 3: Risk-Value Matrix - Vehicle Makes**
+- **File**: `09_creative_3_risk_value_matrix.png`
+- **Type**: Scatter plot with quadrant analysis
+- **Key Insight**: Identifies vehicle makes that are:
+  - High Premium + Low Risk: Premium opportunities (top-right quadrant)
+  - Low Premium + High Risk: Need premium adjustment (bottom-left quadrant)
+  - High Premium + High Risk: Review pricing strategy (top-left quadrant)
+- **Business Impact**: Enables strategic pricing decisions by vehicle make, identifying opportunities to increase premiums for low-risk makes and adjust premiums for high-risk makes.
 
 #### Statistical Insights
 
@@ -217,9 +243,9 @@ This interim report summarizes the progress made on the first two tasks of the i
 ### 2.2 Data Versioning
 
 **Data Files Tracked:**
-- [List of data files added to DVC]
-- [File sizes]
-- [DVC file locations]
+- `data/raw/MachineLearningRating_v3.txt` - Main insurance dataset (1,000,098 rows, 52 columns)
+- File tracked using DVC for version control
+- `.dvc` files committed to Git repository
 
 **Version Control:**
 - ✅ Data files tracked with DVC
@@ -242,8 +268,8 @@ This interim report summarizes the progress made on the first two tasks of the i
 ```bash
 dvc init
 dvc remote add -d localstorage ./data/dvc_storage
-dvc add data/raw/insurance_data.csv
-git add data/raw/insurance_data.csv.dvc
+dvc add data/raw/MachineLearningRating_v3.txt
+git add data/raw/MachineLearningRating_v3.txt.dvc
 dvc push
 ```
 
@@ -339,7 +365,20 @@ The project is well-positioned to proceed with A/B hypothesis testing (Task 3) a
 [Detailed description of all columns if needed]
 
 ### Appendix D: Additional Visualizations
-[Links to or descriptions of additional plots]
+
+All visualizations are saved in the `reports/figures/` directory:
+
+1. **01_histograms_numerical_variables.png** - Distribution of key numerical variables
+2. **02_bar_charts_categorical_variables.png** - Distribution of key categorical variables
+3. **03_correlation_matrix.png** - Correlation heatmap of numerical variables
+4. **04_monthly_changes_premium_claims_by_postalcode.png** - Monthly changes analysis by postal code
+5. **05_geographic_trends_analysis.png** - Geographic trends (Cover Type, Premium, Auto Makes by Province)
+6. **06_box_plots_outlier_detection.png** - Outlier detection using box plots
+7. **07_creative_1_loss_ratio_heatmap.png** - Loss Ratio Heatmap (Province vs Vehicle Type)
+8. **08_creative_2_temporal_risk_trend.png** - Temporal Risk Trend Analysis
+9. **09_creative_3_risk_value_matrix.png** - Risk-Value Matrix (Vehicle Makes)
+
+All figures are saved at 300 DPI for high-quality presentation.
 
 ---
 

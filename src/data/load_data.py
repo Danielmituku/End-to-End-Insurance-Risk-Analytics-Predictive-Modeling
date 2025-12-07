@@ -8,7 +8,7 @@ from src.utils.config import RAW_DATA_DIR
 
 def load_insurance_data(file_path: Optional[str] = None) -> pd.DataFrame:
     """
-    Load insurance data from CSV file.
+    Load insurance data from CSV or text file.
     
     Parameters
     ----------
@@ -26,11 +26,11 @@ def load_insurance_data(file_path: Optional[str] = None) -> pd.DataFrame:
         If the data file is not found.
     """
     if file_path is None:
-        # Look for common data file names
-        possible_files = list(RAW_DATA_DIR.glob("*.csv"))
+        # Look for common data file names (CSV and TXT)
+        possible_files = list(RAW_DATA_DIR.glob("*.csv")) + list(RAW_DATA_DIR.glob("*.txt"))
         if not possible_files:
             raise FileNotFoundError(
-                f"No CSV files found in {RAW_DATA_DIR}. "
+                f"No data files (CSV or TXT) found in {RAW_DATA_DIR}. "
                 "Please provide a file_path or place data in the raw data directory."
             )
         file_path = possible_files[0]
@@ -40,7 +40,19 @@ def load_insurance_data(file_path: Optional[str] = None) -> pd.DataFrame:
         raise FileNotFoundError(f"Data file not found: {file_path}")
     
     print(f"Loading data from: {file_path}")
-    df = pd.read_csv(file_path)
+    
+    # Detect delimiter based on file extension and content
+    if file_path.suffix.lower() == '.txt':
+        # Try pipe delimiter first (common for insurance data)
+        # If that fails, try comma
+        try:
+            df = pd.read_csv(file_path, sep='|', low_memory=False)
+        except Exception:
+            df = pd.read_csv(file_path, sep=',', low_memory=False)
+    else:
+        # For CSV files, use comma delimiter
+        df = pd.read_csv(file_path, low_memory=False)
+    
     print(f"Loaded {len(df)} rows and {len(df.columns)} columns")
     
     return df
