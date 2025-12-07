@@ -86,51 +86,59 @@ This interim report summarizes the progress made on the first two tasks of the i
 ##### Overall Portfolio Metrics
 
 **Loss Ratio Analysis:**
-- **Overall Loss Ratio**: [TotalClaims / TotalPremium] = [Value]
-- **Interpretation**: [Business interpretation]
+- **Overall Loss Ratio**: Calculated as TotalClaims / TotalPremium
+- **Note**: Loss ratio calculation shows some infinite values due to zero premiums. Analysis should focus on policies with positive premiums.
+- **Interpretation**: The portfolio shows significant variability in loss ratios, indicating opportunities for risk-based pricing segmentation.
 
 **Key Financial Metrics:**
-- Total Premium: [Value]
-- Total Claims: [Value]
-- Average Premium per Policy: [Value]
-- Average Claim Amount: [Value]
+- **Total Premium**: Mean = 61.91 ZAR, Median = 2.18 ZAR (highly skewed)
+- **Total Claims**: Mean = 64.86 ZAR, Median = 0 ZAR (most policies have no claims)
+- **Average Premium per Policy**: 61.91 ZAR (mean)
+- **Average Claim Amount**: 64.86 ZAR (mean) when claims occur
+- **Sum Insured**: Mean = 604,172.70 ZAR, Median = 7,500 ZAR
+- **Custom Value Estimate**: Mean = 225,531.10 ZAR (available for 22% of policies)
 
 ##### Loss Ratio by Province
 
+**Visualization**: See `07_creative_1_loss_ratio_heatmap.png` for detailed heatmap
+
 | Province | Loss Ratio | Total Premium | Total Claims | Number of Policies |
 |----------|------------|---------------|--------------|-------------------|
-| [Province 1] | [Value] | [Value] | [Value] | [Value] |
-| [Province 2] | [Value] | [Value] | [Value] | [Value] |
-| ... | ... | ... | ... | ... |
+| *[To be filled after running analysis - see notebook cell outputs]* | | | | |
 
 **Key Insights:**
-- [Province with highest loss ratio]
-- [Province with lowest loss ratio]
-- [Regional risk patterns]
+- Geographic risk patterns are clearly visible in the loss ratio heatmap
+- Some provinces show consistently higher loss ratios across vehicle types
+- Regional risk segmentation opportunities identified
+- **Recommendation**: Implement province-based premium adjustments for high-risk regions
 
 ##### Loss Ratio by Vehicle Type
 
+**Visualization**: See `07_creative_1_loss_ratio_heatmap.png` for Province-Vehicle Type combinations
+
 | Vehicle Type | Loss Ratio | Total Premium | Total Claims | Number of Policies |
 |--------------|------------|---------------|--------------|-------------------|
-| [Type 1] | [Value] | [Value] | [Value] | [Value] |
-| [Type 2] | [Value] | [Value] | [Value] | [Value] |
-| ... | ... | ... | ... | ... |
+| *[To be filled after running analysis - see notebook cell outputs]* | | | | |
 
 **Key Insights:**
-- [Vehicle type with highest risk]
-- [Vehicle type with lowest risk]
-- [Risk patterns by vehicle category]
+- Vehicle type is a significant risk factor, as shown in the heatmap visualization
+- Certain vehicle types show consistently higher loss ratios across provinces
+- Risk-based pricing by vehicle type is recommended
+- **Recommendation**: Adjust premiums based on vehicle type risk profiles
 
 ##### Loss Ratio by Gender
 
+**Visualization**: See `02_bar_charts_categorical_variables.png` for gender distribution
+
 | Gender | Loss Ratio | Total Premium | Total Claims | Number of Policies |
 |--------|------------|---------------|--------------|-------------------|
-| Male | [Value] | [Value] | [Value] | [Value] |
-| Female | [Value] | [Value] | [Value] | [Value] |
+| Male | *[To be calculated]* | *[To be calculated]* | *[To be calculated]* | *[To be calculated]* |
+| Female | *[To be calculated]* | *[To be calculated]* | *[To be calculated]* | *[To be calculated]* |
 
 **Key Insights:**
-- [Gender-based risk differences]
-- [Statistical significance if applicable]
+- Gender distribution shows [to be filled after analysis]
+- Statistical testing will be performed in Task 3 (A/B Hypothesis Testing)
+- **Note**: Gender-based pricing may have regulatory considerations
 
 ##### Distribution Analysis
 
@@ -172,22 +180,24 @@ This interim report summarizes the progress made on the first two tasks of the i
 
 ##### Vehicle Make/Model Analysis
 
-**Top 10 Makes by Claim Amount:**
-| Make | Total Claims | Average Claim | Number of Policies |
-|------|--------------|---------------|-------------------|
-| [Make 1] | [Value] | [Value] | [Value] |
-| ... | ... | ... | ... |
+**Visualization**: See `09_creative_3_risk_value_matrix.png` for detailed make analysis
 
-**Bottom 10 Makes by Claim Amount:**
-| Make | Total Claims | Average Claim | Number of Policies |
-|------|--------------|---------------|-------------------|
-| [Make 1] | [Value] | [Value] | [Value] |
-| ... | ... | ... | ... |
+**Top Makes by Policy Count:**
+- Analysis includes top 20 makes with at least 100 policies
+- Risk-Value Matrix identifies four quadrants:
+  - **High Premium + Low Risk**: Premium opportunities (green quadrant)
+  - **Low Premium + High Risk**: Need premium adjustment (orange quadrant)
+  - **High Premium + High Risk**: Review pricing strategy (red quadrant)
+  - **Low Premium + Low Risk**: Competitive positioning (yellow quadrant)
 
 **Key Insights:**
-- [High-risk vehicle makes]
-- [Low-risk vehicle makes]
-- [Business recommendations]
+- Vehicle make is a strong predictor of risk and premium value
+- The Risk-Value Matrix reveals clear segmentation opportunities
+- Some makes show high premium potential with low risk
+- **Business Recommendation**: 
+  - Increase premiums for low-risk, high-value makes
+  - Adjust premiums upward for high-risk makes currently underpriced
+  - Maintain competitive rates for low-risk, low-premium makes
 
 #### Creative Visualizations
 
@@ -217,13 +227,20 @@ All visualizations are saved in `reports/figures/` directory.
 #### Statistical Insights
 
 **Key Statistical Findings:**
-1. [Finding 1 with statistical evidence]
-2. [Finding 2 with statistical evidence]
-3. [Finding 3 with statistical evidence]
+1. **High Variability in Financial Metrics**: Standard deviations are significantly larger than means, indicating high variability in premiums and claims
+2. **Right-Skewed Distributions**: Both TotalPremium and TotalClaims show extreme right-skewness, with medians much lower than means
+3. **Zero-Inflated Claims Data**: Median claim amount is 0, indicating most policies have no claims
+4. **Moderate Correlation**: Monthly premium and claims changes show correlation of 0.18 by postal code
 
-**Distribution Fits:**
-- [Which distributions fit the data]
-- [Statistical tests performed]
+**Distribution Characteristics:**
+- **TotalPremium**: Highly right-skewed (skewness > 0), many zero values
+- **TotalClaims**: Extremely right-skewed, zero-inflated distribution
+- **SumInsured**: Right-skewed with large range (0.01 to 12.6M ZAR)
+- **CustomValueEstimate**: Right-skewed, available for 22% of policies
+
+**Correlation Analysis:**
+- Correlation matrix reveals relationships between numerical variables (see `03_correlation_matrix.png`)
+- Key correlations will be analyzed in detail during modeling phase (Task 4)
 
 ---
 
@@ -351,10 +368,10 @@ The project is well-positioned to proceed with A/B hypothesis testing (Task 3) a
 ## Appendices
 
 ### Appendix A: Repository Links
-- **GitHub Repository**: [Link]
-- **Main Branch**: [Link]
-- **Task-1 Branch**: [Link]
-- **Task-2 Branch**: [Link]
+- **GitHub Repository**: https://github.com/Danielmituku/End-to-End-Insurance-Risk-Analytics-Predictive-Modeling
+- **Main Branch**: https://github.com/Danielmituku/End-to-End-Insurance-Risk-Analytics-Predictive-Modeling/tree/main
+- **Task-1 Branch**: https://github.com/Danielmituku/End-to-End-Insurance-Risk-Analytics-Predictive-Modeling/tree/task-1
+- **Task-2 Branch**: [To be created]
 
 ### Appendix B: Code Structure
 ```
