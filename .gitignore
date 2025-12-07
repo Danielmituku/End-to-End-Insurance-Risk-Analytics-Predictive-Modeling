@@ -41,12 +41,12 @@ ENV/
 !notebooks/*.ipynb
 
 # DVC
-.dvc/
 .dvc/cache
-*.dvc
+!.dvc
 
 # Data files (tracked by DVC)
-data/raw/
+data/raw/*
+!data/raw/*.dvc
 data/processed/
 *.csv
 *.parquet
