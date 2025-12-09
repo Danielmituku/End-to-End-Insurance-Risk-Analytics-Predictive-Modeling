@@ -11,10 +11,15 @@ from .models import (
     train_linear_regression,
     train_decision_tree,
     train_random_forest,
-    train_xgboost,
     evaluate_model,
     compare_models
 )
+
+# Import XGBoost only if available
+try:
+    from .models import train_xgboost
+except ImportError:
+    train_xgboost = None
 
 from .interpretability import (
     get_feature_importance,

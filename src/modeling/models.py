@@ -5,12 +5,20 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
-from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from typing import Dict, Tuple, Any
 import warnings
 
 warnings.filterwarnings('ignore')
+
+# Try to import XGBoost, but make it optional
+try:
+    from xgboost import XGBRegressor
+    XGBOOST_AVAILABLE = True
+except ImportError as e:
+    XGBOOST_AVAILABLE = False
+    XGBRegressor = None
+    warnings.warn(f"XGBoost not available: {e}. XGBoost models will not work. Install with: pip install xgboost")
 
 
 def train_linear_regression(X_train: np.ndarray, y_train: np.ndarray,
@@ -176,7 +184,18 @@ def train_xgboost(X_train: np.ndarray, y_train: np.ndarray,
     -------
     tuple
         (model, training_metrics)
+    
+    Raises
+    ------
+    ImportError
+        If XGBoost is not available
     """
+    if not XGBOOST_AVAILABLE:
+        raise ImportError(
+            "XGBoost is not available. Please install it with: pip install xgboost\n"
+            "If you're on macOS with Apple Silicon, try: pip install xgboost --upgrade"
+        )
+    
     model = XGBRegressor(
         n_estimators=n_estimators,
         max_depth=max_depth,
