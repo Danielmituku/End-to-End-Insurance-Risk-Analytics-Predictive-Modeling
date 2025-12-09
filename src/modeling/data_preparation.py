@@ -39,6 +39,9 @@ def prepare_claim_severity_data(df: pd.DataFrame,
     if len(df_claims) == 0:
         raise ValueError("No policies with claims found in the dataset")
     
+    # Debug: Print available columns
+    print(f"Available columns in dataset: {list(df_claims.columns)[:15]}...")
+    
     # Select features for modeling (try both case variations)
     feature_cols = [
         'Province', 'PostalCode', 'Gender', 'MaritalStatus',
@@ -65,6 +68,8 @@ def prepare_claim_severity_data(df: pd.DataFrame,
     
     if len(available_cols) == 0:
         raise ValueError(f"No feature columns found. Available columns: {list(df_claims.columns)[:10]}")
+    
+    print(f"Using {len(available_cols)} features: {available_cols[:5]}...")
     
     X = df_claims[available_cols].copy()
     y = df_claims[target_col].copy()
