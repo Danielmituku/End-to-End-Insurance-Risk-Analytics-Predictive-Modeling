@@ -810,6 +810,9 @@ All visualizations are saved in the `reports/figures/` directory:
 7. **07_creative_1_loss_ratio_heatmap.png** - Loss Ratio Heatmap (Province vs Vehicle Type)
 8. **08_creative_2_temporal_risk_trend.png** - Temporal Risk Trend Analysis
 9. **09_creative_3_risk_value_matrix.png** - Risk-Value Matrix (Vehicle Makes)
+10. **10_feature_importance_claim_severity.png** - Top 10 Feature Importance for Claim Severity Model
+11. **11_feature_importance_premium.png** - Top 10 Feature Importance for Premium Prediction Model
+12. **12_shap_summary_claim_severity.png** - SHAP Summary Plot for Claim Severity Model
 
 All figures are saved at 300 DPI for high-quality presentation.
 
