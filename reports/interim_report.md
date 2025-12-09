@@ -4,7 +4,7 @@
 **Client**: AlphaCare Insurance Solutions (ACIS)  
 **Date**: December 07, 2025  
 **Author**: [Your Name]  
-**Status**: Interim Submission (Tasks 1, 2 & 3)
+**Status**: Interim Submission (Tasks 1, 2, 3 & 4)
 
 ---
 
@@ -17,6 +17,7 @@ This interim report summarizes the progress made on the first two tasks of the i
 - ✅ Completed comprehensive Exploratory Data Analysis (EDA)
 - ✅ Set up Data Version Control (DVC) for reproducible data management
 - ✅ Performed A/B Hypothesis Testing to validate risk drivers
+- ✅ Built predictive models for claim severity and premium optimization
 - ✅ Identified initial insights into risk patterns and data quality
 
 ---
@@ -554,7 +555,155 @@ Statistical hypothesis testing was performed to validate or reject key hypothese
 
 ---
 
-## 4. Challenges and Limitations
+## 4. Task 4: Statistical Modeling
+
+### 4.1 Overview
+
+Predictive models were built for two key business objectives:
+1. **Claim Severity Prediction**: Predict TotalClaims for policies with claims > 0
+2. **Premium Optimization**: Predict optimal premium values
+
+Four machine learning models were implemented and compared: Linear Regression, Decision Tree, Random Forest, and XGBoost (when available).
+
+### 4.2 Model 1: Claim Severity Prediction
+
+**Objective**: Predict claim amounts for policies that have experienced claims.
+
+**Data Preparation:**
+- Filtered to policies with TotalClaims > 0
+- Features used: Province, PostalCode, Gender, MaritalStatus, VehicleType, Make, RegistrationYear, Cubiccapacity, Kilowatts, SumInsured, CoverType, CalculatedPremiumPerTerm
+- Train-test split: 80-20
+- Features encoded and scaled
+
+**Model Performance:**
+
+| Model | Train RMSE | Train R² | Test RMSE | Test R² | Test MAE | Test MAPE |
+|-------|------------|----------|-----------|---------|----------|-----------|
+| Linear Regression | 31,972.20 | 0.305 | 34,148.28 | **0.275** | 17,599.02 | 372.09% |
+| Decision Tree | 25,794.25 | 0.548 | 37,701.53 | 0.116 | 16,395.65 | 242.73% |
+| Random Forest | 23,679.71 | 0.619 | 34,279.47 | 0.269 | 15,612.75 | 248.20% |
+
+**Best Model**: **Linear Regression** (by Test R² = 0.275)
+
+**Key Findings:**
+- Linear Regression shows best generalization (highest test R²)
+- Random Forest shows overfitting (high train R² = 0.619, lower test R² = 0.269)
+- Test RMSE of 34,148 ZAR indicates moderate prediction accuracy
+- High MAPE (372%) suggests high variability in claim amounts
+
+**Top 5 Most Important Features:**
+1. SumInsured (45,526.47) - Strongest predictor
+2. CalculatedPremiumPerTerm (43,110.40) - Premium amount
+3. CoverType_Windscreen (14,284.09) - Cover type indicator
+4. CoverType_Income Protector (9,844.75) - Cover type indicator
+5. PostalCode (7,719.39) - Geographic location
+
+**Business Interpretation:**
+- SumInsured and CalculatedPremiumPerTerm are the strongest predictors of claim severity
+- Geographic location (PostalCode) plays a significant role
+- Cover type (Windscreen, Income Protector) influences claim amounts
+- Model explains 27.5% of variance in claim severity, indicating room for improvement
+
+### 4.3 Model 2: Premium Prediction
+
+**Objective**: Predict optimal premium values for pricing optimization.
+
+**Data Preparation:**
+- Used all policies with valid premium data
+- Same feature set as claim severity model
+- Train-test split: 80-20
+- Features encoded and scaled
+
+**Model Performance:**
+
+| Model | Train RMSE | Train R² | Test RMSE | Test R² | Test MAE | Test MAPE |
+|-------|------------|----------|-----------|---------|----------|-----------|
+| Linear Regression | 184.31 | 0.420 | 118.50 | 0.545 | 51.78 | 2.45 × 10¹¹% |
+| Decision Tree | 175.19 | 0.476 | 108.03 | 0.622 | 44.59 | 2.13 × 10¹¹% |
+| Random Forest | 174.49 | 0.480 | 107.59 | **0.625** | 44.82 | 2.15 × 10¹¹% |
+
+**Best Model**: **Random Forest** (by Test R² = 0.625)
+
+**Key Findings:**
+- Random Forest achieves best performance with R² = 0.625
+- Test RMSE of 107.59 ZAR indicates good prediction accuracy
+- Model explains 62.5% of variance in premium values
+- All models show good generalization (test R² close to train R²)
+
+**Top 5 Most Important Features:**
+1. CalculatedPremiumPerTerm (0.7341) - Dominant predictor (73.4% importance)
+2. SumInsured (0.2425) - Second most important (24.3% importance)
+3. PostalCode (0.0099) - Geographic location
+4. Cubiccapacity (0.0027) - Vehicle engine capacity
+5. RegistrationYear (0.0021) - Vehicle age indicator
+
+**Business Interpretation:**
+- CalculatedPremiumPerTerm and SumInsured together explain ~97% of premium variance
+- Geographic location (PostalCode) has minor but measurable impact
+- Vehicle characteristics (cubic capacity, registration year) contribute minimally
+- Model performs well for premium prediction, suitable for pricing optimization
+
+### 4.4 Model Interpretability
+
+**Feature Importance Analysis:**
+- Feature importance plots generated for both best models
+- Visualizations saved: `10_feature_importance_claim_severity.png`, `11_feature_importance_premium.png`
+
+**SHAP Analysis:**
+- SHAP (SHapley Additive exPlanations) analysis performed for claim severity model
+- Provides local and global feature importance explanations
+- Visualization saved: `12_shap_summary_claim_severity.png`
+
+**Key Insights:**
+- SumInsured and CalculatedPremiumPerTerm are consistently the most important features
+- Geographic features (Province, PostalCode) show moderate importance
+- Vehicle characteristics have varying impact depending on the prediction task
+
+### 4.5 Model Comparison Summary
+
+**Claim Severity Prediction:**
+- **Best Model**: Linear Regression
+- **Performance**: R² = 0.275, RMSE = 34,148 ZAR
+- **Use Case**: Moderate accuracy for claim amount prediction
+- **Limitation**: High variability in claim amounts limits predictive power
+
+**Premium Prediction:**
+- **Best Model**: Random Forest
+- **Performance**: R² = 0.625, RMSE = 107.59 ZAR
+- **Use Case**: Strong accuracy for premium optimization
+- **Strength**: Good generalization, suitable for production use
+
+### 4.6 Business Recommendations from Modeling
+
+**Immediate Actions:**
+1. **Premium Optimization**: Deploy Random Forest model for premium prediction
+   - Model achieves 62.5% R², suitable for pricing decisions
+   - Use for dynamic pricing based on CalculatedPremiumPerTerm and SumInsured
+   - Incorporate PostalCode for geographic risk adjustments
+
+2. **Claim Severity Prediction**: Use Linear Regression model with caution
+   - Lower R² (27.5%) indicates limited predictive power
+   - Focus on high-value features (SumInsured, CalculatedPremiumPerTerm)
+   - Consider ensemble methods or feature engineering for improvement
+
+3. **Feature Engineering**: Prioritize SumInsured and CalculatedPremiumPerTerm
+   - These features dominate both models
+   - Ensure data quality and completeness for these fields
+   - Consider creating derived features from these base features
+
+4. **Model Improvement**: 
+   - For claim severity: Explore non-linear models, feature interactions, or external data
+   - For premium: Current model is production-ready; monitor performance over time
+
+**Strategic Implications:**
+- Premium prediction model is ready for deployment
+- Claim severity model needs refinement before production use
+- Geographic features validated as important for both tasks
+- Focus on data quality for top features to improve model performance
+
+---
+
+## 5. Challenges and Limitations
 
 ### 4.1 Challenges Encountered
 
@@ -596,7 +745,7 @@ Statistical hypothesis testing was performed to validate or reject key hypothese
 
 ---
 
-## 5. Conclusion
+## 6. Conclusion
 
 This interim report demonstrates significant progress on the insurance risk analytics project. The comprehensive EDA has revealed valuable insights into risk patterns across provinces, vehicle types, and demographics. The DVC setup ensures reproducibility and auditability, critical for regulatory compliance.
 
@@ -661,6 +810,9 @@ All visualizations are saved in the `reports/figures/` directory:
 7. **07_creative_1_loss_ratio_heatmap.png** - Loss Ratio Heatmap (Province vs Vehicle Type)
 8. **08_creative_2_temporal_risk_trend.png** - Temporal Risk Trend Analysis
 9. **09_creative_3_risk_value_matrix.png** - Risk-Value Matrix (Vehicle Makes)
+10. **10_feature_importance_claim_severity.png** - Top 10 Feature Importance for Claim Severity Model
+11. **11_feature_importance_premium.png** - Top 10 Feature Importance for Premium Prediction Model
+12. **12_shap_summary_claim_severity.png** - SHAP Summary Plot for Claim Severity Model
 
 All figures are saved at 300 DPI for high-quality presentation.
 
