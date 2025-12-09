@@ -4,7 +4,7 @@
 **Client**: AlphaCare Insurance Solutions (ACIS)  
 **Date**: December 07, 2025  
 **Author**: [Your Name]  
-**Status**: Interim Submission (Tasks 1 & 2)
+**Status**: Interim Submission (Tasks 1, 2 & 3)
 
 ---
 
@@ -16,6 +16,7 @@ This interim report summarizes the progress made on the first two tasks of the i
 - ✅ Established project infrastructure with Git/GitHub and CI/CD pipeline
 - ✅ Completed comprehensive Exploratory Data Analysis (EDA)
 - ✅ Set up Data Version Control (DVC) for reproducible data management
+- ✅ Performed A/B Hypothesis Testing to validate risk drivers
 - ✅ Identified initial insights into risk patterns and data quality
 
 ---
@@ -398,17 +399,158 @@ Based on the EDA findings:
 - **Priority 3**: Implement validation rules to prevent missing critical fields
 - **Priority 4**: Collect NumberOfVehiclesInFleet if relevant for fleet pricing
 
-### 3.3 Next Steps (Tasks 3 & 4)
+### 3.3 A/B Hypothesis Testing Results (Task 3)
 
 **Task 3 - A/B Hypothesis Testing:**
-- Ready to test risk differences across provinces, zip codes, and demographics
-- Data segmentation strategy defined
-- Statistical tests identified
+- ✅ All 4 hypotheses tested with appropriate statistical methods
+- ✅ Results documented and interpreted
+- ✅ Business recommendations provided for each hypothesis
 
 **Task 4 - Statistical Modeling:**
 - Data preparation pipeline established
 - Feature engineering opportunities identified
 - Model selection strategy planned
+
+---
+
+## 3. Task 3: A/B Hypothesis Testing
+
+### 3.1 Overview
+
+Statistical hypothesis testing was performed to validate or reject key hypotheses about risk drivers. All tests were conducted at a significance level of α = 0.05.
+
+### 3.2 Hypothesis 1: Risk Differences Across Provinces
+
+**H₀**: There are no risk differences across provinces
+
+**Tests Performed:**
+1. **Claim Frequency Test** (Chi-squared test for independence)
+   - Test Statistic: χ² = 104.19
+   - p-value: 5.93 × 10⁻¹⁹ (highly significant)
+   - Degrees of Freedom: 8
+   - **Result**: REJECT H₀ (p < 0.05)
+
+2. **Claim Severity Test** (ANOVA)
+   - Test Statistic: F = 4.83
+   - p-value: 6.30 × 10⁻⁶ (highly significant)
+   - **Result**: REJECT H₀ (p < 0.05)
+
+**Overall Result**: **REJECT H₀** - Risk differences exist across provinces
+
+**Business Interpretation:**
+- Statistically significant risk differences exist across provinces in both claim frequency and severity
+- This validates the EDA findings showing provinces like Gauteng (116.3% loss ratio) and Western Cape (104.4%) have significantly higher risk than provinces like Northern Cape (28.3%)
+- **Recommendation**: Implement province-based premium adjustments immediately. High-risk provinces require premium increases of 15-20% to achieve profitability.
+
+### 3.3 Hypothesis 2: Risk Differences Between Zip Codes
+
+**H₀**: There are no risk differences between zip codes
+
+**Tests Performed:**
+1. **Claim Frequency Test** (Chi-squared test)
+   - Test Statistic: χ² = 72.65
+   - p-value: 4.59 × 10⁻¹² (highly significant)
+   - Degrees of Freedom: 9
+   - **Result**: REJECT H₀ (p < 0.05)
+   - **Note**: Test performed on top 10 zip codes by policy count
+
+2. **Claim Severity Test** (ANOVA)
+   - Test Statistic: F = 5.24
+   - p-value: 5.47 × 10⁻⁷ (highly significant)
+   - **Result**: REJECT H₀ (p < 0.05)
+
+**Overall Result**: **REJECT H₀** - Risk differences exist between zip codes
+
+**Business Interpretation:**
+- Statistically significant risk differences exist between zip codes in both claim frequency and severity
+- Geographic risk segmentation at the zip code level is valid and should be incorporated into pricing models
+- **Recommendation**: Develop zip code-based risk tiers for premium pricing. High-risk zip codes should have premiums adjusted upward, while low-risk zip codes can be used for competitive pricing to attract new customers.
+
+### 3.4 Hypothesis 3: Margin Differences Between Zip Codes
+
+**H₀**: There is no significant margin (profit) difference between zip codes
+
+**Test Performed:**
+- **Margin Test** (ANOVA)
+  - Test Statistic: F = 1.05
+  - p-value: 0.396 (not significant)
+  - **Result**: FAIL TO REJECT H₀ (p ≥ 0.05)
+  - **Note**: Test performed on top 10 zip codes by policy count
+
+**Overall Result**: **FAIL TO REJECT H₀** - No significant margin difference between zip codes
+
+**Business Interpretation:**
+- While risk (claims) differs significantly by zip code, the margin (profit) does not show statistically significant differences
+- This suggests that premium pricing may already be partially adjusted for risk, or that other factors (expenses, commissions) offset risk differences
+- **Recommendation**: 
+  - Review current pricing strategy - premiums may need more aggressive risk-based adjustments
+  - Investigate cost structures (expenses, commissions) that may be diluting margin differences
+  - Consider that margin differences may exist but require larger sample sizes or different segmentation to detect
+
+### 3.5 Hypothesis 4: Risk Differences Between Women and Men
+
+**H₀**: There is no significant risk difference between Women and Men
+
+**Tests Performed:**
+1. **Claim Frequency Test** (Chi-squared test)
+   - Test Statistic: χ² = 0.004
+   - p-value: 0.951 (not significant)
+   - Degrees of Freedom: 1
+   - **Result**: FAIL TO REJECT H₀ (p ≥ 0.05)
+
+2. **Claim Severity Test** (t-test)
+   - Test Statistic: t = -0.42
+   - p-value: 0.676 (not significant)
+   - Male Mean Severity: 14,858.55 ZAR
+   - Female Mean Severity: 17,874.72 ZAR
+   - **Result**: FAIL TO REJECT H₀ (p ≥ 0.05)
+
+**Overall Result**: **FAIL TO REJECT H₀** - No significant risk differences between genders
+
+**Business Interpretation:**
+- No statistically significant differences in risk between men and women for both claim frequency and severity
+- **Important Note**: Only 172 policies (2.5% of portfolio) have specified gender, limiting statistical power
+- The small sample size may prevent detection of true differences if they exist
+- **Recommendation**: 
+  - **Data Quality**: Improve gender data collection to enable more robust gender-based analysis
+  - **Pricing Policy**: Given no significant differences found and regulatory considerations, gender should not be used as a pricing factor
+  - **Future Analysis**: Re-test with larger sample size once data quality improves
+
+### 3.6 Summary of Hypothesis Tests
+
+| Hypothesis | Metric | Test | p-value | Result |
+|------------|--------|------|---------|--------|
+| Province Risk Differences | Frequency | Chi-squared | 5.93 × 10⁻¹⁹ | **REJECT H₀** |
+| Province Risk Differences | Severity | ANOVA | 6.30 × 10⁻⁶ | **REJECT H₀** |
+| Zipcode Risk Differences | Frequency | Chi-squared | 4.59 × 10⁻¹² | **REJECT H₀** |
+| Zipcode Risk Differences | Severity | ANOVA | 5.47 × 10⁻⁷ | **REJECT H₀** |
+| Zipcode Margin Differences | Margin | ANOVA | 0.396 | **FAIL TO REJECT H₀** |
+| Gender Risk Differences | Frequency | Chi-squared | 0.951 | **FAIL TO REJECT H₀** |
+| Gender Risk Differences | Severity | t-test | 0.676 | **FAIL TO REJECT H₀** |
+
+### 3.7 Key Business Recommendations from Hypothesis Testing
+
+**Immediate Actions:**
+1. **Province-Based Pricing**: Implement risk-based premium adjustments by province immediately
+   - High-risk provinces (Gauteng, Western Cape, KwaZulu-Natal) need 15-20% premium increases
+   - Low-risk provinces can maintain competitive rates or reduce premiums to attract customers
+
+2. **Zip Code Segmentation**: Develop zip code-based risk tiers for pricing
+   - Create risk categories (high, medium, low) based on zip code performance
+   - Adjust premiums accordingly while monitoring margin impact
+
+3. **Margin Analysis**: Investigate why margin differences are not significant despite risk differences
+   - Review expense structures and commission rates
+   - Consider more granular analysis or larger sample sizes
+
+4. **Data Quality**: Improve gender data collection for future analysis
+   - Current sample size (2.5%) is insufficient for robust gender-based pricing decisions
+   - Gender-based pricing has regulatory considerations regardless of statistical findings
+
+**Strategic Implications:**
+- Geographic segmentation (province and zip code) is validated as a key pricing factor
+- Risk-based pricing by location should be a core component of the pricing strategy
+- Portfolio profitability can be improved through targeted premium adjustments in high-risk geographic areas
 
 ---
 
@@ -462,10 +604,11 @@ This interim report demonstrates significant progress on the insurance risk anal
 - ✅ Robust project infrastructure established
 - ✅ Comprehensive EDA completed with actionable insights
 - ✅ Data version control implemented
-- ✅ Foundation laid for hypothesis testing and modeling
+- ✅ A/B hypothesis testing completed with statistical validation
+- ✅ Foundation laid for statistical modeling (Task 4)
 
 **Next Phase:**
-The project is well-positioned to proceed with A/B hypothesis testing (Task 3) and statistical modeling (Task 4), building on the insights discovered in this phase.
+The project is well-positioned to proceed with statistical modeling (Task 4), building on the validated insights from EDA and hypothesis testing. The confirmed risk differences by geography provide a strong foundation for predictive modeling.
 
 ---
 
