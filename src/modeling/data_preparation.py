@@ -39,15 +39,33 @@ def prepare_claim_severity_data(df: pd.DataFrame,
     if len(df_claims) == 0:
         raise ValueError("No policies with claims found in the dataset")
     
-    # Select features for modeling
+    # Select features for modeling (try both case variations)
     feature_cols = [
         'Province', 'PostalCode', 'Gender', 'MaritalStatus',
-        'VehicleType', 'make', 'RegistrationYear', 'cubiccapacity',
-        'kilowatts', 'SumInsured', 'CoverType', 'CalculatedPremiumPerTerm'
+        'VehicleType', 'make', 'Make', 'RegistrationYear', 
+        'cubiccapacity', 'Cubiccapacity', 'kilowatts', 'Kilowatts',
+        'SumInsured', 'CoverType', 'CalculatedPremiumPerTerm'
     ]
     
-    # Filter to available columns
-    available_cols = [col for col in feature_cols if col in df_claims.columns]
+    # Create a mapping of lowercase column names to actual column names
+    col_mapping = {col.lower(): col for col in df_claims.columns}
+    
+    # Find available columns (case-insensitive matching)
+    available_cols = []
+    for col in feature_cols:
+        # Try exact match first
+        if col in df_claims.columns:
+            if col not in available_cols:
+                available_cols.append(col)
+        # Try case-insensitive match
+        elif col.lower() in col_mapping:
+            actual_col = col_mapping[col.lower()]
+            if actual_col not in available_cols:
+                available_cols.append(actual_col)
+    
+    if len(available_cols) == 0:
+        raise ValueError(f"No feature columns found. Available columns: {list(df_claims.columns)[:10]}")
+    
     X = df_claims[available_cols].copy()
     y = df_claims[target_col].copy()
     
@@ -55,7 +73,13 @@ def prepare_claim_severity_data(df: pd.DataFrame,
     # For numerical: fill with median
     numerical_cols = X.select_dtypes(include=[np.number]).columns
     for col in numerical_cols:
-        X[col].fillna(X[col].median(), inplace=True)
+        if X[col].isna().any():
+            median_val = X[col].median()
+            if pd.isna(median_val):
+                # If median is NaN (all values are NaN), fill with 0
+                X[col].fillna(0, inplace=True)
+            else:
+                X[col].fillna(median_val, inplace=True)
     
     # For categorical: fill with mode
     categorical_cols = X.select_dtypes(include=['object']).columns
@@ -106,15 +130,36 @@ def prepare_premium_prediction_data(df: pd.DataFrame,
     """
     df_clean = df.copy()
     
-    # Select features
+    # Select features (try both case variations)
     feature_cols = [
         'Province', 'PostalCode', 'Gender', 'MaritalStatus',
-        'VehicleType', 'make', 'RegistrationYear', 'cubiccapacity',
-        'kilowatts', 'SumInsured', 'CoverType', 'CalculatedPremiumPerTerm',
-        'VehicleType', 'bodytype', 'NumberOfDoors'
+        'VehicleType', 'make', 'Make', 'RegistrationYear', 
+        'cubiccapacity', 'Cubiccapacity', 'kilowatts', 'Kilowatts',
+        'SumInsured', 'CoverType', 'CalculatedPremiumPerTerm',
+        'bodytype', 'BodyType', 'NumberOfDoors'
     ]
     
-    available_cols = [col for col in feature_cols if col in df_clean.columns]
+    # Create a mapping of lowercase column names to actual column names
+    col_mapping = {col.lower(): col for col in df_clean.columns}
+    
+    # Find available columns (case-insensitive matching, remove duplicates)
+    available_cols = []
+    seen_lower = set()
+    for col in feature_cols:
+        # Try exact match first
+        if col in df_clean.columns and col.lower() not in seen_lower:
+            available_cols.append(col)
+            seen_lower.add(col.lower())
+        # Try case-insensitive match
+        elif col.lower() in col_mapping:
+            actual_col = col_mapping[col.lower()]
+            if actual_col not in available_cols:
+                available_cols.append(actual_col)
+                seen_lower.add(col.lower())
+    
+    if len(available_cols) == 0:
+        raise ValueError(f"No feature columns found. Available columns: {list(df_clean.columns)[:10]}")
+    
     X = df_clean[available_cols].copy()
     y = df_clean[target_col].copy()
     
@@ -126,7 +171,13 @@ def prepare_premium_prediction_data(df: pd.DataFrame,
     # Handle missing values
     numerical_cols = X.select_dtypes(include=[np.number]).columns
     for col in numerical_cols:
-        X[col].fillna(X[col].median(), inplace=True)
+        if X[col].isna().any():
+            median_val = X[col].median()
+            if pd.isna(median_val):
+                # If median is NaN (all values are NaN), fill with 0
+                X[col].fillna(0, inplace=True)
+            else:
+                X[col].fillna(median_val, inplace=True)
     
     categorical_cols = X.select_dtypes(include=['object']).columns
     for col in categorical_cols:
