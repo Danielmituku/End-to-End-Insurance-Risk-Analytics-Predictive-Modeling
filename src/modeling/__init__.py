@@ -15,11 +15,8 @@ from .models import (
     compare_models
 )
 
-# Import XGBoost only if available
-try:
-    from .models import train_xgboost
-except ImportError:
-    train_xgboost = None
+# Import XGBoost function (it will handle import errors internally)
+from .models import train_xgboost
 
 from .interpretability import (
     get_feature_importance,

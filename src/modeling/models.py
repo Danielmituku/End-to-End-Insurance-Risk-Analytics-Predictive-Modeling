@@ -11,14 +11,9 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-# Try to import XGBoost, but make it optional
-try:
-    from xgboost import XGBRegressor
-    XGBOOST_AVAILABLE = True
-except ImportError as e:
-    XGBOOST_AVAILABLE = False
-    XGBRegressor = None
-    warnings.warn(f"XGBoost not available: {e}. XGBoost models will not work. Install with: pip install xgboost")
+# XGBoost will be imported inside the function to avoid import errors
+XGBOOST_AVAILABLE = None
+XGBRegressor = None
 
 
 def train_linear_regression(X_train: np.ndarray, y_train: np.ndarray,
@@ -190,7 +185,24 @@ def train_xgboost(X_train: np.ndarray, y_train: np.ndarray,
     ImportError
         If XGBoost is not available
     """
-    if not XGBOOST_AVAILABLE:
+    # Try to import XGBoost only when needed
+    global XGBOOST_AVAILABLE, XGBRegressor
+    
+    if XGBOOST_AVAILABLE is None:
+        # First time calling this function, try to import
+        try:
+            from xgboost import XGBRegressor
+            XGBOOST_AVAILABLE = True
+        except (ImportError, Exception) as e:
+            XGBOOST_AVAILABLE = False
+            XGBRegressor = None
+            raise ImportError(
+                f"XGBoost is not available: {e}\n"
+                "Please install it with: pip install xgboost\n"
+                "If you're on macOS with Apple Silicon, try: pip install xgboost --upgrade"
+            ) from e
+    
+    if not XGBOOST_AVAILABLE or XGBRegressor is None:
         raise ImportError(
             "XGBoost is not available. Please install it with: pip install xgboost\n"
             "If you're on macOS with Apple Silicon, try: pip install xgboost --upgrade"
